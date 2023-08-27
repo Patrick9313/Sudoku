@@ -1,0 +1,31 @@
+fprintf('cell=%d\n',cell);
+cell_record(cell_record_ptr)=cell;
+cell_record_ptr =cell_record_ptr+1;
+
+xcell=ceil(cell/Order); ycell=mod(cell‐1,Order)+1;
+ 
+goto_nextcell=0;
+while((goto_nextcell==0) && (ptrs(cell)<=Order))
+    if cur_mark(xcell,ycell,ptrs(cell))==0
+              ptrs(cell)=ptrs(cell)+1;
+         else
+             next_mark=refresh_mark(groups,cur_mark,xcell,ycell,ptrs(cell));
+             if check_mark(next_mark)==1
+                 diff_mark(:,:,:,cell)=next_mark‐cur_mark;
+                 cur_mark=next_mark;
+                 cell=cell+1;
+                 goto_nextcell=1;
+             else
+                 ptrs(cell)=ptrs(cell)+1;
+             end
+         end
+     end
+     
+     if goto_nextcell==0
+         ptrs(cell)=1;
+         cell=cell‐1;
+         if cell~=0
+             cur_mark=cur_mark‐diff_mark(:,:,:,cell);
+             ptrs(cell)=ptrs(cell)+1;
+         end
+     end
